@@ -5,7 +5,7 @@ Netflix is one of the most popular streaming services worldwide, with millions o
  
 Description of the use case:
 
-Goal: To identify the top 5 countries where Netflix generates the most revenue, the top 5 countries where Netflix generates the least amount of revenue, and the most popular genre in the Netflix database in order to inform future marketing strategies and target countries with low viewership.
+Goal: To identify the top 5 countries where Netflix generates the most revenue, the top 5 countries where Netflix generates the least amount of revenue, and the most number of movies by genre in the Netflix database in order to inform future marketing strategies and target countries with low production of movie genres.
 
 Steps:
 
@@ -22,4 +22,4 @@ Steps:
 11. Identify the most popular genre in each country.
 12. Develop marketing strategies to target countries with low viewership and increase viewership of the most popular genres in those regions.
 
-Expected Outcome: A report detailing the top 5 countries where Netflix generates the most revenue, the top 5 countries where it generates the least amount of revenue, and the most popular genre in the Netflix database. The report should also include the differences in revenue and the popularity of the genre for each country, and recommendations on marketing strategies to target countries with low viewership and increase revenue and viewership in those regions. 
+Expected Outcome: A report detailing the top 5 countries where Netflix generates the most revenue, the top 5 countries where it generates the least amount of revenue, and the most popular genre in the Netflix database. The report should also include the differences in revenue and the number of movie genres for each country, and recommendations on marketing strategies to target countries with low production of genres and increase revenue by producing more diverse library in those regions.  
