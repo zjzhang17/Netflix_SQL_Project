@@ -1,0 +1,119 @@
+INSERT INTO Country (country_id, country_code, country_name) 
+VALUES ('66', 'ky', 'Kenya');
+
+UPDATE Country SET country_code = 'uk' WHERE country_id= 62;
+
+DELETE FROM Country 
+WHERE country_id = ‘66’ and country_code = ‘ky’;
+
+--this function calculates the sum of the "Total_Library_Size" column for all the rows in the "Library" table that match the given country_id. This function can be useful in various scenarios where the total library size for a specific country needs to be calculated frequently.
+
+DROP FUNCTION IF EXISTS get_total_library_size;
+DELIMITER //
+CREATE FUNCTION get_total_library_size(country_id INT)
+RETURNS BIGINT
+DETERMINISTIC
+BEGIN
+    DECLARE total_size BIGINT;
+    SELECT SUM(Total_Library_Size)
+    INTO total_size
+    FROM Library
+    WHERE country_id = country_id;
+    RETURN total_size;
+END//
+
+DELIMITER ;
+-- #test
+ SELECT get_total_library_size(1);
+
+-- this code uses the SUM() function to calculate the total library for that country and stores the result in the ‘Total_Library_Size’ output parameter
+
+DELIMITER //
+DROP PROCEDURE IF EXISTS get_total_library_size2;
+CREATE PROCEDURE get_total_library_size2(IN country_code VARCHAR(1024), OUT total_size BIGINT)
+BEGIN
+  SELECT SUM(l.Total_Library_Size) INTO total_size
+  FROM library l
+  JOIN country c ON l.country_id = c.country_id
+  WHERE c.country_code = country_code;
+END //
+DELIMITER ;
+
+CALL get_total_library_size2('us', @Total_Library_Size);
+SELECT @Total_Library_Size;
+
+
+-- To retrieve the total number of movies in the Netflix library for a specific country.
+
+– –
+DELIMITER //
+DROP PROCEDURE IF EXISTS get_total_movies;
+CREATE PROCEDURE get_total_movies(
+  IN country_code VARCHAR(1024),
+  OUT total_movies BIGINT
+)
+BEGIN
+  SELECT SUM(No_of_Movies) INTO total_movies
+  FROM Library AS l
+  JOIN Country AS c ON l.country_id = c.country_id
+  WHERE c.country_code = country_code;
+END //
+
+DELIMITER ;
+CALL get_total_movies('US', @total_movies);
+SELECT @total_movies;
+
+
+CREATE VIEW Tot_Movies_by_Genre AS
+SELECT g.Genre_name, SUM(gm.N_Movies_by_Genre) AS No_of_Movies
+FROM Genre AS g
+INNER JOIN Genre_movie AS gm ON g.Genre_id = gm.Genre_id
+GROUP BY Genre_name
+ORDER BY No_of_Movies DESC
+LIMIT 5;
+
+
+
+-- We want to analyze the top 5 countries where Netflix generates the most revenue and top 5 countries where Netflix generates the least amount of revenue. The data will provide future marketing strategies to target countries that have low viewership. 
+
+
+WITH subscription_revenue AS (
+  SELECT s.country_id, p.Amount_in_USD, COUNT(*) AS subscribers
+  FROM subscription_plan_by_country as s
+  JOIN price as p ON s.Subscription_Plan_ID = p.Subscription_Plan_ID
+  GROUP BY s.Country_id, s.Subscription_Plan_ID, p.Amount_in_USD
+)
+SELECT distinct (sr.country_id),
+       SUM(p.Amount_in_USD * subscribers) OVER (PARTITION BY sr.country_id ORDER BY sr.country_id) AS revenue_running_total
+FROM subscription_revenue as sr
+JOIN price as p ON sr.country_id = p.country_id
+order by revenue_running_total desc
+limit 5;
+
+–- #Lowest Revenue
+WITH subscription_revenue AS (
+  SELECT s.country_id, p.Amount_in_USD, COUNT(*) AS subscribers
+  FROM subscription_plan_by_country as s
+  JOIN price as p ON s.Subscription_Plan_ID = p.Subscription_Plan_ID
+  GROUP BY s.Country_id, s.Subscription_Plan_ID, p.Amount_in_USD
+)
+SELECT distinct (sr.country_id),
+       round(SUM(p.Amount_in_USD * subscribers) OVER (PARTITION BY sr.country_id ORDER BY sr.country_id)) AS revenue_running_total
+FROM subscription_revenue as sr
+JOIN price as p ON sr.country_id = p.country_id
+order by revenue_running_total asc
+limit 5;
+
+–- These creates view to display the total number of movies by genre in each county, and order it in number of Movies_by_Genre of of  ascending. 
+
+drop VIEW IF EXISTS country_genre_movie_count;
+CREATE VIEW country_genre_movie_count AS
+SELECT c.country_name, gm.N_Movies_by_Genre,g.Genre_name
+FROM country c
+INNER JOIN genre_movie gm ON c.country_id = gm.country_id
+INNER JOIN genre g ON gm.Genre_id = g.Genre_id;
+select * from country_genre_movie_count
+where country_name='Argentina'
+order by N_Movies_by_Genre;
+
+
