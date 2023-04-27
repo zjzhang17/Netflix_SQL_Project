@@ -4,7 +4,7 @@ VALUES ('66', 'ky', 'Kenya');
 UPDATE Country SET country_code = 'uk' WHERE country_id= 62;
 
 DELETE FROM Country 
-WHERE country_id = ‘66’ and country_code = ‘ky’;
+WHERE country_id = '66' and country_code = 'ky';
 
 --this function calculates the sum of the "Total_Library_Size" column for all the rows in the "Library" table that match the given country_id. This function can be useful in various scenarios where the total library size for a specific country needs to be calculated frequently.
 
