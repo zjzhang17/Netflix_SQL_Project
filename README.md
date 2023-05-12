@@ -23,3 +23,5 @@ Steps:
 12. Develop marketing strategies to target countries with low viewership and increase viewership of the most popular genres in those regions.
 
 Expected Outcome: A report detailing the top 5 countries where Netflix generates the most revenue, the top 5 countries where it generates the least amount of revenue, and the most popular genre in the Netflix database. The report should also include the differences in revenue and the number of movie genres for each country, and recommendations on marketing strategies to target countries with low production of genres and increase revenue by producing more diverse library in those regions.  
+
+Link to the dataset: https://www.kaggle.com/datasets/prasertk/netflix-subscription-price-in-different-countries?select=Netflix+subscription+fee+Dec-2021.csv
